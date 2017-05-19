@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.xx.blogsystem.dao.BlogTypeMapper" >
+  <resultMap id="BaseResultMap" type="me.xx.blogsystem.entity.BlogType" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="typeName" property="typename" jdbcType="VARCHAR" />
+    <result column="orderNum" property="ordernum" jdbcType="INTEGER" />
+    <result column="blogCount" property="blogCount" jdbcType="INTEGER" />
+    <association property="blog" javaType="blog">
+    	<id column="blogger_id" property="id"/>
+    	<result column="releaseDate" property="releasedate"/>
+    </association>
+  </resultMap>
+  
+  <!-- 分页 -->
+  <select id="findAll" resultMap="BaseResultMap">
+  		SELECT 
+		  t2.*,
+		  COUNT(t1.id) AS blogCount 
+		FROM
+		  blog t1 
+		  RIGHT JOIN blogtype t2 
+		ON t1.type_id = t2.id 
+		GROUP BY t2.typeName 
+		ORDER BY t2.orderNum
+  </select>
+  
+  <select id="selectPage" resultMap="BaseResultMap">
+  		select id,typeName,orderNum from blogtype order by orderNum
+  </select>
+  
+  <select id="selectPageCount" parameterType="me.xx.blogsystem.utils.PageBean" resultType="Integer">
+  		select count(1) from blog
+  </select>
+  
+  <select id="findByTypeName" parameterType="String" resultMap="BaseResultMap">
+  		select * from blogtype where typeName=#{typename}
+  </select>
+  
+  <select id="findByBloggerId" resultMap="BaseResultMap" parameterType="Integer">
+  		  SELECT 
+		  t2.*,
+		  COUNT(t1.id) AS blogCount 
+		FROM
+		  blog t1 
+		  RIGHT JOIN blogtype t2 
+		ON t2.blogger_id=#{value} and t1.blogger_id = t2.blogger_id and t1.type_id = t2.id
+		GROUP BY t2.typeName 
+		ORDER BY t2.orderNum
+  </select>
+  
+  <insert id="insert" parameterType="blogType">
+  		insert into blogtype(typeName,orderNum) values(#{typename},#{ordernum})
+  </insert>
+  
+  <delete id="deleteList">
+  		delete from blogtype where id in
+  		<foreach collection="array" open="(" close=")" separator="," item="pk">
+  			#{pk}
+  		</foreach>
+  </delete>
+  
+  <update id="update" parameterType="blogType">
+  		update blogtype
+  		<set>
+  			<if test="typename!=null and typename!=''">
+  				typeName=#{typename},
+  			</if>
+  			<if test="ordernum!=null and ordernum!=''">
+  				orderNum=#{ordernum},
+  			</if>
+  		</set>
+  		where id=#{id}
+  </update>
+</mapper>

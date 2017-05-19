@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.xx.blogsystem.dao.FansMapper">
+	<resultMap id="BaseResultMap" type="me.xx.blogsystem.entity.Fans">
+		<id column="id" property="id" jdbcType="INTEGER"/>
+		<result column="userIp" property="userIp" jdbcType="VARCHAR"/>
+		<result column="attentionDate" property="attentionDate" jdbcType="TIMESTAMP"/>
+		<result column="blogger_id" property="bloggerId" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<insert id="insert" parameterType="fans">
+		insert into fans(userIp,attentionDate,blogger_id) values(#{userIp},now(),#{bloggerId});
+	</insert>
+	
+	<delete id="deleteByIp" parameterType="fans">
+		delete from fans where userIp=#{userIp}
+	</delete>
+	
+	<select id="findByIp" resultMap="BaseResultMap">
+		select * from fans where userIp=#{value}
+	</select>
+</mapper>

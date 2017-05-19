@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.xx.blogsystem.dao.TCommentMapper" >
+  <resultMap id="BaseResultMap" type="me.xx.blogsystem.entity.TComment" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userIp" property="userip" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="commentDate" property="commentdate" jdbcType="TIMESTAMP" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="blog_id" property="blogId" javaType="INTEGER"/>
+    <association property="blog" javaType="blog">
+    	<id column="blog_id" property="id"/>
+    	<result column="title" property="title"/>
+    </association>
+ 
+  </resultMap>
+  
+  <insert id="insert" parameterType="tComment">
+  		insert into t_comment(userIp,content,commentDate,state,blog_id)
+  		values(#{userip},#{content},now(),0,#{blog.id})
+  </insert>
+  
+  <update id="update" parameterType="tComment">
+  		update t_comment
+  		<set>
+  			<if test="state!=null">
+  				state=#{state}
+  			</if>
+  		</set>
+  		where id=#{id}
+  </update>
+  
+  <select id="findByMap" parameterType="Map" resultMap="BaseResultMap">
+  		select t_comment.*,blog.title from t_comment,blog,blogger
+  		<where>
+  			<if test="blogId!=null">
+  				and blog_id=#{blogId}
+  			</if>
+  			<if test="state!=null">
+  				and state=#{state}
+  			</if>
+  			<if test="bloggerId!=null">
+  				and blog.blogger_id=#{bloggerId}		
+  			</if>
+  				and t_comment.blog_id=blog.id
+  				and blog.blogger_id=blogger.id
+  		</where>
+  		ORDER BY commentDate DESC
+  		<if test="start!=null and pageSize!=null">
+		 	limit #{start},#{pageSize}
+		 </if>
+  </select>
+  
+  <select id="getPageCount" parameterType="Map" resultType="Integer">
+  		select count(1) from t_comment,blog,blogger
+  		<where>
+  			<if test="blogId!=null">
+  				and blog_id=#{blogId}
+  			</if>
+  			<if test="state!=null">
+  				and state=#{state}
+  			</if>
+  				and t_comment.blog_id=blog.id
+  				and blog.blogger_id=blogger.id
+  				and blog.blogger_id=#{bloggerId}
+  		</where>
+  </select>
+  
+  <select id="findAll" resultMap="BaseResultMap">
+  		select * from t_comment
+  </select>
+
+  <delete id="deleteList">
+  		delete from t_comment where id in
+  		<foreach collection="array" open="(" close=")" item="pk" separator=",">
+  			#{pk}
+  		</foreach>
+  </delete>
+</mapper>

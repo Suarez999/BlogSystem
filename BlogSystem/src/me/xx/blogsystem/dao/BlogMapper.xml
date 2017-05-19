@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.xx.blogsystem.dao.BlogMapper" >
+  <resultMap id="BaseResultMap" type="me.xx.blogsystem.entity.Blog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="summary" property="summary" jdbcType="VARCHAR" />
+    <result column="releaseDate" property="releasedate" jdbcType="TIMESTAMP" />
+    <result column="clickHit" property="clickhit" jdbcType="INTEGER" />
+    <result column="replyHit" property="replyhit" jdbcType="INTEGER" />
+    <result column="goodHit" property="goodhit" jdbcType="INTEGER" />
+    <result column="payHit" property="payhit" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="keyWord" property="keyword" jdbcType="VARCHAR" />
+  	<result column="type_id" property="blogTypeId" jdbcType="INTEGER" />
+    <result column="blogger_id" property="bloggerId" jdbcType="INTEGER" />
+    <result column="blogCount" property="blogCount" jdbcType="INTEGER"/>
+    <result column="releaseDateStr" property="releaseDateStr" jdbcType="VARCHAR"/>
+    <association property="blogType" javaType="blogType">
+    	<id column="type_id" property="id"/>
+    	<result column="typeName" property="typename"/>
+    </association>
+    <association property="blogger" javaType="blogger">
+    	<id column="blogger_id" property="id"/>
+    </association>
+  </resultMap>
+  
+  <insert id="insertBlog" parameterType="blog">
+  	insert into blog(title,summary,releaseDate,replyHit,goodHit,payHit,content,keyWord,type_id,blogger_id) values(#{title},#{summary},now(),0,0,0,#{content},#{keyword},#{blogType.id},#{blogger.id})
+  </insert>
+
+  <select id="selectPage" parameterType="me.xx.blogsystem.utils.PageBean" resultMap="BaseResultMap" >
+  		select blog.id,blog.title,blog.releaseDate,blogtype.typeName from blog,blogtype,blogger where blog.type_id=blogtype.id 
+  		and blog.title like #{keyWord} and blog.blogger_id=blogger.id 
+  		<if test="value!=null and value!=''">
+  			and blog.blogger_id=#{value} 
+  		</if>
+  		limit #{start},#{rows}
+  </select>
+ 
+  <select id="selectPageCount" parameterType="me.xx.blogsystem.utils.PageBean" resultType="Integer">
+  		select count(1) from blog,blogType,blogger where blog.type_id=blogtype.id and blog.title like #{keyWord} and blog.blogger_id=blogger.id 
+  </select>
+  
+  <select id="findById" resultMap="BaseResultMap" parameterType="Integer">
+  		select blog.*,blogtype.id,blogtype.typeName from blog,blogtype where blog.type_id=blogtype.id 
+  		and blog.id=#{value}
+  </select>
+  
+  <select id="findAll" resultMap="BaseResultMap">
+  		select * from blog
+  </select>
+  
+  <update id="update" parameterType="blog">
+  		update blog
+		<set>
+			<if test="title!=null and title!=''">
+		 		title=#{title},
+		 	</if>
+		 	<if test="summary!=null and summary!=''">
+		 		summary=#{summary},
+		 	</if>
+		 	<if test="content!=null and content!=''">
+		 		content=#{content},
+		 	</if>
+		    <if test="blogType.id!=null and blogType.id!=''">
+				type_id=#{blogType.id},
+			</if>
+			<if test="clickhit!=null">
+				clickHit=#{clickhit},
+			</if>
+			<if test="replyhit!=null">
+				replyHit=#{replyhit},
+			</if>
+			<if test="goodhit!=null">
+				goodHit=#{goodhit},
+			</if>
+			<if test="payhit!=null">
+				payHit=#{payhit},
+			</if>
+			<if test="keyword!=null and keyword!=''">
+		 		keyWord=#{keyword},
+		 	</if>
+		</set>
+		where id=#{id}
+  </update>
+  
+  <delete id="deleteList">
+  		delete from blog where id in
+  		<foreach collection="array" open="(" close=")" separator="," item="pk">
+  			#{pk}
+  		</foreach>
+  </delete>
+  
+  <select id="findByType" resultMap="BaseResultMap" parameterType="Integer">
+  		select * from blog where type_id=#{value}
+  </select>
+  
+  <select id="findByBloggerId" resultMap="BaseResultMap" parameterType="Integer">
+  		select * from blog where blogger_id=#{value}
+  </select>
+  
+  <select id="selectByDate" resultMap="BaseResultMap" parameterType="Integer">
+  		select  DATE_FORMAT(releaseDate,'%Y年%m月') as releaseDateStr,
+		COUNT(*) AS blogCount from blog where blogger_id=#{value}
+		 GROUP BY DATE_FORMAT(releaseDate,'%Y年%m月')
+		  ORDER BY releaseDate DESC
+  </select>
+  
+  <select id="findByKeyword" parameterType="String" resultMap="BaseResultMap">
+  		select * from blog where keyWord like CONCAT('%',#{value},'%')
+  </select>
+</mapper>

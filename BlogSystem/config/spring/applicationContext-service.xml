@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    	 http://www.springframework.org/schema/beans/spring-beans.xsd
+     	 http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop.xsd
+         http://www.springframework.org/schema/tx
+     	 http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+     	 
+     <bean id="adminService" class="me.xx.blogsystem.service.impl.AdminServiceImpl"></bean>
+	 <bean id="blogService" class="me.xx.blogsystem.service.impl.BlogServiceImpl"></bean>
+	 <bean id="blogTypeService" class="me.xx.blogsystem.service.impl.BlogTypeServiceImpl"></bean>
+	 <bean id="bloggerService" class="me.xx.blogsystem.service.impl.BloggerServiceImpl"></bean>
+	 <bean id="tCommentService" class="me.xx.blogsystem.service.impl.TCommentServiceImpl"></bean>
+	 <bean id="fansService" class="me.xx.blogsystem.service.impl.FansServiceImpl"></bean>
+	 <bean id="attentionService" class="me.xx.blogsystem.service.impl.AttentionServiceImpl"></bean>
+	 <bean id="payService" class="me.xx.blogsystem.service.impl.PayServiceImpl"></bean>
+	 <bean id="wordService" class="me.xx.blogsystem.service.impl.WordServiceImpl"></bean>
+	 <bean id="sensitiveWordService" class="me.xx.blogsystem.service.impl.SensitiveWordServiceImpl"></bean>
+	 <bean id="chatService" class="me.xx.blogsystem.service.impl.ChatServiceImpl"></bean>
+	 <bean id="linkService" class="me.xx.blogsystem.service.impl.LinkServiceImpl"></bean> 
+</beans>

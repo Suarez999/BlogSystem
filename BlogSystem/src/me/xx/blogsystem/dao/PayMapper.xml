@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.xx.blogsystem.dao.PayMapper" >
+  <resultMap id="BaseResultMap" type="me.xx.blogsystem.entity.Pay" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userIp" property="userIp" jdbcType="VARCHAR"/>
+    <result column="payMoney" property="paymoney" jdbcType="VARCHAR" />
+    <result column="payDate" property="paydate" jdbcType="TIMESTAMP" />
+    <result column="blog_id" property="blogId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <insert id="insert" parameterType="pay">
+  		insert into pay(userIp,payMoney,payDate,blog_id) values(#{userIp},#{paymoney},now(),#{blogId})
+  </insert>
+</mapper>

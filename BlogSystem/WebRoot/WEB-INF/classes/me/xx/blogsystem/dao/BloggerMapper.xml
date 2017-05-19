@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.xx.blogsystem.dao.BloggerMapper" >
+  <resultMap id="BaseResultMap" type="me.xx.blogsystem.entity.Blogger" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="sign" property="sign" jdbcType="VARCHAR" />
+    <result column="imagename" property="imagename" jdbcType="VARCHAR" />
+    <result column="attention" property="attention" jdbcType="INTEGER" />
+    <result column="fans" property="fans" jdbcType="INTEGER"/>
+    <result column="wordHit" property="wordHit" jdbcType="INTEGER"/>
+    <result column="chatNum" property="chatnum" jdbcType="VARCHAR"/>
+  </resultMap>
+  
+  <select id="select" parameterType="blogger" resultMap="BaseResultMap">
+  		select * from blogger where nickname=#{nickname} and password=#{password}
+  </select>
+  
+  <select id="findTop5Blogger" resultMap="BaseResultMap">
+  		select * from blogger order by fans desc limit 0,5
+  </select>
+  
+  <select id="findById" resultMap="BaseResultMap" parameterType="Integer">
+  		select * from blogger where id=#{id}
+  </select>
+  
+  <update id="update" parameterType="blogger">
+  		update blogger
+  		<set>
+  			<if test="nickname!=null and nickname!=''">
+		 		nickname=#{nickname},
+		 	</if>
+			<if test="password!=null and password!=''">
+		 		password=#{password},
+		 	</if>
+			<if test="sign!=null and sign!=''">
+		 		sign=#{sign},
+		 	</if>
+			<if test="profile!=null and profile!=''">
+		 		profile=#{profile},
+		 	</if>
+			<if test="imagename!=null and imagename!=''">
+		 		imagename=#{imagename},
+		 	</if>
+		 	<if test="attention!=null">
+		 		attention=#{attention},
+		 	</if>
+		 	<if test="fans!=null">
+		 		fans=#{fans},
+		 	</if>
+		 	<if test="wordHit!=null">
+		 		wordHit=#{wordHit},
+		 	</if>
+		 	<if test="chatnum!=null">
+				chatNum=#{chatnum}
+			</if>
+  		</set>
+  		where id=#{id}
+  </update>
+  
+  <insert id="insert" parameterType="blogger">
+  		insert into blogger(username,password,nickname) values(#{username},#{password},#{nickname})
+  </insert>
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.xx.blogsystem.dao.LinkMapper">
+	<resultMap type="me.xx.blogsystem.entity.Link" id="BaseResultMap">
+		<id column="id" property="id" jdbcType="INTEGER"/>
+		<result column="linkname" property="linkName" jdbcType="VARCHAR"/>
+		<result column="linkurl" property="linkUrl" jdbcType="VARCHAR"/>
+		<result column="orderNum" property="orderNum" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<insert id="insert" parameterType="link">
+		insert into link(linkname,linkurl,orderNum) values(#{linkName},#{linkUrl},#{orderNum})
+	</insert>
+	
+	<delete id="deleteList">
+		delete from link where id in
+		<foreach collection="array" item="pk" open="(" close=")" separator=",">
+			#{pk}
+		</foreach>
+	</delete>
+	
+	<update id="update" parameterType="link">
+		update link 
+		<set>
+			<if test="linkName!=null and linkName!=''">
+				linkname=#{linkName},
+			</if>
+			<if test="linkUrl!=null and linkUrl!=''">
+				linkurl=#{linkUrl},
+			</if>
+			<if test="orderNum!=null">
+				orderNum=#{orderNum}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<select id="selectPage" parameterType="me.xx.blogsystem.utils.PageBean" resultMap="BaseResultMap">
+		select * from link order by orderNum limit #{start},#{rows}
+	</select>
+	
+	<select id="selectPageCount" resultType="Integer">
+		select count(1) from link 
+	</select>
+	
+	<select id="findAll" resultMap="BaseResultMap">
+		select * from link order by orderNum
+	</select>
+</mapper>
